@@ -1,7 +1,3 @@
-Sure, here's a draft for a README file that describes your project:
-
----
-
 # Nginx with OAuth2 Proxy and Azure AD Integration
 
 This project provides a Docker image that extends the base Nginx image with support for OAuth2 Proxy and Azure Active Directory (AD) integration. The Docker image is built using a Dockerfile and is automatically pushed to the GitHub Container Registry using a GitHub Actions workflow.
