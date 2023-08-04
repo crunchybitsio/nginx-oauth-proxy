@@ -1,0 +1,17 @@
+# Login to Azure
+az login
+
+# Create a new Azure AD application
+app=$(az ad app create --display-name "OAuth2 Proxy" --reply-urls "http://localhost:4180/oauth2/callback" --query appId --output tsv)
+
+# Create a new secret for the application
+secret=$(az ad app credential reset --id $app --credential-description "OAuth2 Proxy Secret" --query password --output tsv)
+
+# Add the necessary API permissions
+az ad app permission add --id $app --api 00000003-0000-0000-c000-000000000000 --api-permissions 5b567255-7703-4780-807c-7be8301ae99b=Role
+
+# Grant admin consent for the permissions
+az ad app permission admin-consent --id $app
+
+echo "Application ID: $app"
+echo "Secret: $secret"
