@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# Get the directory of the current script
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd .. && pwd)"
+echo $DIR
+DOMAIN="localhost"
+FILENAME="server"
+CERT_PATH="$DIR/$FILENAME.crt"
+KEY_PATH="$DIR/$FILENAME.key"
+
+# Generate private key
+openssl genpkey -algorithm RSA -out $KEY_PATH
+
+# Generate self-signed certificate
+openssl req -new -x509 -key $KEY_PATH -out $CERT_PATH -days 365 -subj "/CN=$DOMAIN"
+
+# Set permissions on private key
+chmod 400 $KEY_PATH
+
+# Print paths to the console
+echo "Self-signed certificate and key generated for $DOMAIN"
+echo "Certificate: $CERT_PATH"
+echo "Key: $KEY_PATH"

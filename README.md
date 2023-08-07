@@ -1,5 +1,7 @@
 # Nginx with OAuth2 Proxy and Azure AD Integration
 
+WORK IN PROGRESS!!!
+
 This project provides a Docker image that extends the base Nginx image with support for OAuth2 Proxy and Azure Active Directory (AD) integration. The Docker image is built using a Dockerfile and is automatically pushed to the GitHub Container Registry using a GitHub Actions workflow.
 
 ## Overview
@@ -41,3 +43,15 @@ Contributions to this project are welcome. Please feel free to open an issue or 
 ---
 
 This README provides a high-level overview of the project, explains how to use the Docker image, and describes how to configure the Nginx server and OAuth2 Proxy. You might need to adjust it based on your specific use case and environment.
+
+
+## Generating a cookie
+
+The command below creates 32 base64 byts
+
+openssl rand -base64 24
+
+
+## Generating SSL Certs
+
+Step 01

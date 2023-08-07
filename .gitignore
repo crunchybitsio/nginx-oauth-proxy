@@ -1,1 +1,4 @@
-.terraform*
+
+server.crt
+.gitignore
+server.key

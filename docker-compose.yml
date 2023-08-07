@@ -1,0 +1,66 @@
+version: '3.8'
+services:
+  ssl-proxy:
+    image: nginx:latest
+    container_name: ssl-proxy
+    volumes:
+      - ./proxy-nginx.conf:/etc/nginx/nginx.conf
+      - ./server.crt:/etc/nginx/ssl/server.crt
+      - ./server.key:/etc/nginx/ssl/server.key
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - my-network
+    depends_on:
+      - oauth2-proxy
+
+  oauth2-proxy:
+    container_name: oauth2-proxy
+    image: quay.io/oauth2-proxy/oauth2-proxy:v7.4.0
+    environment:
+      # redis was required to be used otherwise the cookies were to large
+      OAUTH2_PROXY_SESSION_STORE_TYPE: "redis"
+      OAUTH2_PROXY_REDIS_CONNECTION_URL: "redis://redis:6379"      
+      OAUTH2_PROXY_SET_AUTHORIZATION_HEADER: "true"
+      OAUTH2_PROXY_SET_XAUTHREQUEST: "true"
+      OAUTH2_PROXY_COOKIE_SAMESITE: "lax"
+      OAUTH2_PROXY_COOKIE_NAME: "oauth2_proxy"
+      OAUTH2_PROXY_EMAIL_DOMAINS: "verm42.onmicrosoft.com" 
+      OAUTH2_PROXY_COOKIE_SECRET: $OAUTH2_PROXY_COOKIE_SECRET 
+      OAUTH2_PROXY_COOKIE_SECURE: "true" 
+      OAUTH2_PROXY_PROVIDER: "azure" 
+      OAUTH2_PROXY_AZURE_TENANT: $OAUTH2_PROXY_AZURE_TENANT
+      OAUTH2_PROXY_OIDC_ISSUER_URL: "https://login.microsoftonline.com/${OAUTH2_PROXY_AZURE_TENANT}/v2.0"
+      OAUTH2_PROXY_REVERSE_PROXY: "false" 
+      OAUTH2_PROXY_CLIENT_ID: $OAUTH2_PROXY_CLIENT_ID 
+      OAUTH2_PROXY_CLIENT_SECRET: $OAUTH2_PROXY_CLIENT_SECRET
+      OAUTH2_PROXY_HTTP_ADDRESS: "http://oauth2-proxy:4180"
+      OAUTH2_PROXY_COOKIE_DOMAIN: "localhost"
+      OAUTH2_PROXY_WHITELIST_DOMAIN: "localhost"
+    networks:
+      - my-network
+    expose:
+      - "4180"
+    depends_on:
+      - webapp
+      - redis
+  webapp:
+    image: nginx:latest
+    container_name: webapp
+    volumes:
+      - ./webapp-nginx.conf:/etc/nginx/nginx.conf
+      - ./index.html:/usr/share/nginx/html/index.html
+    expose:
+      - "80"
+    networks:
+      - my-network
+  redis:
+    image: redis:latest
+    container_name: redis
+    networks:
+      - my-network
+    expose:
+      - "6379"
+networks:
+  my-network:
