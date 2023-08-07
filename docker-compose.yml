@@ -20,13 +20,14 @@ services:
     image: quay.io/oauth2-proxy/oauth2-proxy:v7.4.0
     environment:
       # redis was required to be used otherwise the cookies were to large
+      OAUTH2_PROXY_PASS_ACCESS_TOKEN: "true"
       OAUTH2_PROXY_SESSION_STORE_TYPE: "redis"
       OAUTH2_PROXY_REDIS_CONNECTION_URL: "redis://redis:6379"      
       OAUTH2_PROXY_SET_AUTHORIZATION_HEADER: "true"
       OAUTH2_PROXY_SET_XAUTHREQUEST: "true"
       OAUTH2_PROXY_COOKIE_SAMESITE: "lax"
       OAUTH2_PROXY_COOKIE_NAME: "oauth2_proxy"
-      OAUTH2_PROXY_EMAIL_DOMAINS: "verm42.onmicrosoft.com" 
+      OAUTH2_PROXY_EMAIL_DOMAINS: $PROXY_EMAIL_DOMAINS 
       OAUTH2_PROXY_COOKIE_SECRET: $OAUTH2_PROXY_COOKIE_SECRET 
       OAUTH2_PROXY_COOKIE_SECURE: "true" 
       OAUTH2_PROXY_PROVIDER: "azure" 
